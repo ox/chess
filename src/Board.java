@@ -56,9 +56,12 @@ public class Board {
   public int movePieceTo(int rank, int file, int drank, int dfile) {
     Piece piece = squares[rank][file].getOccupant();
     
-    if (piece == null) {
-      return -1;
-    }
+    // there is no piece at the source square
+    if (piece == null) return -1;
+    // the source is outside the bounds of the board
+    if (rank < 0 || file < 0 || rank > 7 || file > 7) return -2;
+    // the destination is outside the bounds of the board
+    if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) return -3;
     
     // just move the piece
     if (piece.canMoveTo(drank, dfile) && squares[rank][file] == null) {
