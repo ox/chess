@@ -103,9 +103,10 @@ public class Board {
   }
   
   public String toString() {
-    String ret = "";
+    String ret = "   a  b  c  d  e  f  g  h\n";
     
     for (int i = 0; i < 8; i++) {
+      ret = ret.concat(String.valueOf(8 - i) + " ");
       for (int j = 0; j < 8; j++) {
         ret = ret.concat(squares[i][j].toString() + " ");
       }
