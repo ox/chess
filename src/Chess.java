@@ -4,5 +4,6 @@ public class Chess {
     Board board = new Board();
     
     // start the REPL
+    System.out.println(board);
   }
 }

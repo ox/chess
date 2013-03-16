@@ -21,10 +21,10 @@ public class BoardSquare {
   }
   
   public String getColor() {
-    return this.color;
+    return (this.color == "white" ? "  " : "##");
   }
   
   public String toString() {
-    return this.color;
+    return (this.piece == null ? getColor() : this.piece.toString());
   }
 }

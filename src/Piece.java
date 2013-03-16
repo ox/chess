@@ -1,10 +1,11 @@
 
-public class Piece {
-  private int file, rank, color;
-  private String type;
+public class Piece implements Movable {
+  protected int file, rank;
+  protected String color;
+  protected String type;
   
   public String getColor() {
-    return color == 0 ? "b" : "w";
+    return color.equals("white") ? "w" : "b";
   }
   
   public String getType() {
@@ -22,5 +23,10 @@ public class Piece {
   
   public String toString() {
     return getColor() + getType();
+  }
+
+  @Override
+  public boolean canMoveTo(int file, int rank) {
+    return false;
   }
 }
