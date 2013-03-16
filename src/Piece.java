@@ -26,7 +26,7 @@ public class Piece implements Movable {
   }
 
   @Override
-  public boolean canMoveTo(int file, int rank) {
+  public boolean canMoveTo(int rank, int file) {
     return false;
   }
 }

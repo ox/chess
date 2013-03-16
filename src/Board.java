@@ -49,7 +49,7 @@ public class Board {
     squares[7][5].occupy(new Bishop("white", 7, 5));
     
     squares[7][3].occupy(new Queen("white", 7, 3));
-    squares[7][4].occupy(new King("black", 7, 4));
+    squares[7][4].occupy(new King("white", 7, 4));
     kings[1] = (King) squares[7][4].getOccupant();
   }
   
@@ -89,10 +89,11 @@ public class Board {
   }
   
   public void checkForUpgrades() {
-    // are there pawns that need to become queens?
-    for (int i = 0; i < 8; i++) {
+    // are there pawns that need to become queens at the ends of the board
+    for (int i = 0; i < 8; i+=7) {
       for (int j = 0; j < 8; j++) {
-        if (squares[i][j] != null && squares[i][j].getOccupant().getClass().equals(Pawn .class)) {
+        if (squares[i][j].getOccupant() != null
+            && squares[i][j].getOccupant().getClass().equals(Pawn .class)) {
           Queen new_queen = new Queen(squares[i][j].getOccupant().color, i, j);
           squares[i][j].vacate();
           squares[i][j].occupy(new_queen);
