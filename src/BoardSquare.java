@@ -16,6 +16,10 @@ public class BoardSquare {
     return this.piece;
   }
   
+  public void vacate() {
+    this.piece = null;
+  }
+  
   public void occupy(Piece piece) {
     this.piece = piece;
   }

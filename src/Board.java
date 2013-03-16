@@ -1,10 +1,12 @@
 
 public class Board {
   private BoardSquare[][] squares;
+  private King[] kings;
   
   public Board() {
     String color = "white";
     squares = new BoardSquare[8][8];
+    kings = new King[2];
     
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
@@ -15,7 +17,6 @@ public class Board {
     }
     
     // set up the black pieces
-    //pawns
     for (int j = 0; j < 8; j++) {
       squares[1][j].occupy(new Pawn("black", j, 1));
     }
@@ -31,6 +32,7 @@ public class Board {
     
     squares[0][3].occupy(new Queen("black", 0, 3));
     squares[0][4].occupy(new King("black", 0, 4));
+    kings[0] = (King) squares[0][4].getOccupant();
     
     // set up the white pieces
     for (int j = 0; j < 8; j++) {
@@ -48,6 +50,43 @@ public class Board {
     
     squares[7][3].occupy(new Queen("white", 7, 3));
     squares[7][4].occupy(new King("black", 7, 4));
+    kings[1] = (King) squares[7][4].getOccupant();
+  }
+  
+  public int movePieceTo(int rank, int file, int drank, int dfile) {
+    Piece piece = squares[rank][file].getOccupant();
+    
+    if (piece == null) {
+      return -1;
+    }
+    
+    // just move the piece
+    if (piece.canMoveTo(drank, dfile) && squares[rank][file] == null) {
+      squares[drank][dfile].occupy(piece);
+      squares[rank][file].vacate();
+      checkForUpgrades();
+      return 0;
+    }
+    
+    if (piece.canMoveTo(drank, dfile) && squares[rank][file] != null) {
+      if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
+        // the piece cannot capture it's own bretheren
+        return 1;
+      } else {
+        // there is a capture happening!!!
+        squares[drank][dfile].occupy(piece);
+        squares[rank][file].vacate();
+        checkForUpgrades();
+        return 2;
+      }
+    } else {
+      // the piece can't move to there
+      return 3;
+    }
+  }
+  
+  public void checkForUpgrades() {
+    
   }
   
   public String toString() {
