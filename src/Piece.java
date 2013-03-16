@@ -1,5 +1,5 @@
 
-public abstract class Piece {
+public class Piece {
   private int file, rank, color;
   private String type;
   
