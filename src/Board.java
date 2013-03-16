@@ -89,7 +89,16 @@ public class Board {
   }
   
   public void checkForUpgrades() {
-    
+    // are there pawns that need to become queens?
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (squares[i][j] != null && squares[i][j].getOccupant().getClass().equals(Pawn .class)) {
+          Queen new_queen = new Queen(squares[i][j].getOccupant().color, i, j);
+          squares[i][j].vacate();
+          squares[i][j].occupy(new_queen);
+        }
+      }
+    }
   }
   
   public String toString() {
