@@ -6,9 +6,43 @@ public class Chess {
     
     // start the REPL
     System.out.println(board);
+    board.flipBoard();
+    player_turn = nextPlayer(player_turn);
+    System.out.println(board);
+    
+    String coord = "a1";
+    int[] pair = coordToRankFilePair(coord);
+    System.out.println("{" + pair[0] + ", " + pair[1] + "}");
+    coord = "d7";
+    pair = coordToRankFilePair(coord);
+    System.out.println("{" + pair[0] + ", " + pair[1] + "}");
     
     /*while (!board.hasWinner()) {
       
     }*/
+  }
+  
+  private static String nextPlayer(String current_player) {
+    return (current_player.equals("1") ? "2" : "1");
+  }
+  
+  private static int[] reverseCoordinates(int rank, String file) {
+    int mirrored_rank = 8 - rank;
+    int mirrored_file = 8 - (file.charAt(0) - 'a');
+    return (new int[] {mirrored_rank, mirrored_file});
+  }
+  
+  /**
+   * Turns a FileRank pair into indices in the form {rank, file}.
+   * 
+   * Example:
+   *  a1 => {0,0}
+   *  g8 => {7,6}
+   * 
+   * @param coord
+   * @return
+   */
+  private static int[] coordToRankFilePair(String coord) {
+    return (new int[] {coord.charAt(1) - '1', coord.charAt(0) - 'a'});
   }
 }

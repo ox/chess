@@ -53,6 +53,14 @@ public class Board {
     kings[1] = (King) squares[7][4].getOccupant();
   }
   
+  public void flipBoard() {
+    for (int i = 0; i < 4; i++) {
+      BoardSquare[] temp_row = squares[i];
+      squares[i] = squares[7-i];
+      squares[7-i] = temp_row;
+    }
+  }
+  
   public int movePieceTo(int rank, int file, int drank, int dfile) {
     Piece piece = squares[rank][file].getOccupant();
     
