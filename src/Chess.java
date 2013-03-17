@@ -2,7 +2,7 @@
 public class Chess {
   public static void main(String[] argv) {
     Board board = new Board();
-    String player_turn = "1";
+    String player_turn = "black";
 
     try {
       board.movePieceTo("e8", "f7");
@@ -19,7 +19,7 @@ public class Chess {
   }
   
   private static String nextPlayer(String current_player) {
-    return (current_player.equals("1") ? "2" : "1");
+    return (current_player.equals("black") ? "white" : "black");
   }
   
 }
