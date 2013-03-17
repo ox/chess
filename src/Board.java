@@ -53,7 +53,14 @@ public class Board {
     kings[1] = (King) squares[7][4].getOccupant();
   }
   
-  public int movePieceTo(int rank, int file, int drank, int dfile) {
+  public int movePieceTo(String from, String to) {
+    int[] from_pair, to_pair;
+    from_pair = coordToRankFilePair(from);
+    to_pair = coordToRankFilePair(to);
+    
+    int rank = from_pair[0], file = from_pair[1];
+    int drank = to_pair[0], dfile = to_pair[1];
+    
     Piece piece = squares[rank][file].getOccupant();
     
     // there is no piece at the source square
@@ -71,16 +78,26 @@ public class Board {
       return 0;
     }
     
-    if (piece.canMoveTo(drank, dfile) && squares[rank][file] != null) {
-      if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
-        // the piece cannot capture it's own brethren
-        return -4;
+    if (piece.canMoveTo(drank, dfile)) {
+      // is there someone there?
+      if (squares[drank][dfile].getOccupant() != null) {
+        // is it one of our own pieces?
+        if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
+          // the piece cannot capture it's own brethren
+          return -4;
+        } else {
+          // there is a capture happening!!!
+          squares[drank][dfile].occupy(piece);
+          squares[rank][file].vacate();
+          checkForUpgrades();
+          return 2;
+        }
       } else {
-        // there is a capture happening!!!
-        squares[drank][dfile].occupy(piece);
+        // just move
         squares[rank][file].vacate();
+        squares[drank][dfile].occupy(piece);
         checkForUpgrades();
-        return 2;
+        return 1;
       }
     } else {
       // the piece can't move to there
@@ -100,6 +117,20 @@ public class Board {
         }
       }
     }
+  }
+  
+  /**
+   * Turns a FileRank pair into indices in the form {rank, file}. It's right, trust me.
+   * 
+   * Example:
+   *  a1 => {0,0}
+   *  d7 => {6,3}
+   * 
+   * @param coord
+   * @return
+   */
+  private static int[] coordToRankFilePair(String coord) {
+    return (new int[] {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'});
   }
   
   public String toString() {

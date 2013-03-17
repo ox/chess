@@ -26,17 +26,4 @@ public class Chess {
     return (current_player.equals("1") ? "2" : "1");
   }
   
-  /**
-   * Turns a FileRank pair into indices in the form {rank, file}. It's right, trust me.
-   * 
-   * Example:
-   *  a1 => {0,0}
-   *  d7 => {6,3}
-   * 
-   * @param coord
-   * @return
-   */
-  private static int[] coordToRankFilePair(String coord) {
-    return (new int[] {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'});
-  }
 }
