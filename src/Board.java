@@ -75,10 +75,7 @@ public class Board {
     // the destination is outside the bounds of the board
     if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) throw new IllegalMoveException(to + " is outside the board's bounds");
     
-    boolean piece_ret = piece.canMoveTo(drank, dfile);
-    System.out.println("piece: " + piece_ret);
-    
-    if (piece_ret) {
+    if (piece.canMoveTo(drank, dfile)) {
       // are there any pieces in between if we are not a horse?
       if (!piece.getClass().equals(Horse .class) && piecesBetween(rank, file, drank, dfile)) {
         throw new IllegalMoveException("there are pieces between " + from + " and " + to);
@@ -117,14 +114,15 @@ public class Board {
   
   private boolean piecesBetween(int rank, int file, int drank, int dfile) {
     int r = rank, f = file;
+    if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
+    if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
     
     while ( r != drank || f != dfile ) {
-      // move first, so we aren't on the starting square
-      if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
-      if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
-      
       // if there is a piece and it's not the one we start on, then return true
       if (squares[r][f].getOccupant() != null) return true;
+      
+      if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
+      if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
     }
     return false;
   }
