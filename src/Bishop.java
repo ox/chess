@@ -5,6 +5,7 @@ public class Bishop extends Piece {
     this.color = color;
     this.rank = rank;
     this.file = file;
+    this.times_moved = 0;
   }
   
   @Override

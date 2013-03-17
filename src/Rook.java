@@ -5,6 +5,7 @@ public class Rook extends Piece {
     this.color = color;
     this.file = file;
     this.rank = rank;
+    this.times_moved = 0;
   }
   
   @Override
