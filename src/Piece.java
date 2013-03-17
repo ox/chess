@@ -29,4 +29,9 @@ public class Piece implements Movable {
   public boolean canMoveTo(int rank, int file) {
     return false;
   }
+  
+  @Override
+  public String[] availableMovesFrom(int rank, int file) {
+    return null;
+  }
 }
