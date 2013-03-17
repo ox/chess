@@ -1,4 +1,5 @@
 import exceptions.IllegalMoveException;
+import exceptions.IllegalPromotionException;
 
 
 public class Board {
@@ -58,7 +59,7 @@ public class Board {
 //    kings[0] = (King) squares[0][4].getOccupant();
    }
   
-  public int movePieceTo(String from, String to) throws Exception {
+  public int movePieceTo(String from, String to) throws IllegalMoveException {
     int[] from_pair, to_pair;
     from_pair = coordToRankFilePair(from);
     to_pair = coordToRankFilePair(to);
@@ -76,8 +77,8 @@ public class Board {
     if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) throw new IllegalMoveException(to + " is outside the board's bounds");
     
     if (piece.canMoveTo(drank, dfile)) {
-      // are there any pieces in between if we are not a horse?
-      if (!piece.getClass().equals(Horse .class) && piecesBetween(rank, file, drank, dfile)) {
+      // are there any pieces in between if we are not a knight?
+      if (!piece.getClass().equals(Knight .class) && piecesBetween(rank, file, drank, dfile)) {
         throw new IllegalMoveException("there are pieces between " + from + " and " + to);
       }
       
@@ -92,7 +93,7 @@ public class Board {
           System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
           squares[drank][dfile].occupy(piece);
           squares[rank][file].vacate();
-          checkForUpgrades();
+          piece.incrMoved();
           return 2;
         }
       } else {
@@ -103,7 +104,7 @@ public class Board {
         
         squares[drank][dfile].occupy(piece);
         squares[rank][file].vacate();
-        checkForUpgrades();
+        piece.incrMoved();
         return 1;
       }
     } else {
@@ -127,15 +128,24 @@ public class Board {
     return false;
   }
   
-  private void checkForUpgrades() {
+  public void checkForUpgrades(String type) throws IllegalPromotionException {
     // are there pawns that need to become queens at the ends of the board
     for (int i = 0; i < 8; i+=7) {
       for (int j = 0; j < 8; j++) {
         if (squares[i][j].getOccupant() != null
             && squares[i][j].getOccupant().getClass().equals(Pawn .class)) {
-          Queen new_queen = new Queen(squares[i][j].getOccupant().color, i, j);
-          squares[i][j].vacate();
-          squares[i][j].occupy(new_queen);
+          
+          if (type.equals("Q")) {
+            squares[i][j].occupy(new Queen(squares[i][j].getOccupant().getColor(), i, j));
+          } else if (type.equals("N")) {
+            squares[i][j].occupy(new Knight(squares[i][j].getOccupant().getColor(), i, j));
+          } else if (type.equals("B")) {
+            squares[i][j].occupy(new Bishop(squares[i][j].getOccupant().getColor(), i, j));
+          } else if (type.equals("R")) {
+            squares[i][j].occupy(new Rook(squares[i][j].getOccupant().getColor(), i, j));
+          } else {
+            throw new IllegalPromotionException("unknown promotion to " + type + ". Can be [Q],N,B,R");
+          }
         }
       }
     }

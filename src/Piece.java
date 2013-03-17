@@ -1,8 +1,20 @@
 
 public class Piece implements Movable {
-  protected int file, rank;
+  protected int file, rank, times_moved;
   protected String color;
   protected String type;
+  
+  public int getTimesMoved() {
+    return this.times_moved;
+  }
+  
+  public boolean neverMoved() {
+    return this.times_moved == 0;
+  }
+  
+  public void incrMoved() {
+    this.times_moved += 1;
+  }
   
   public String getColor() {
     return color.equals("white") ? "w" : "b";

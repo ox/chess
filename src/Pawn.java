@@ -3,7 +3,7 @@ public class Pawn extends Piece {
   protected boolean can_enpassant = false;
   
   public Pawn(String color, int rank, int file) {
-    this.type = "P";
+    this.type = "p";
     this.color = color;
     this.file = file;
     this.rank = rank;

@@ -1,7 +1,7 @@
 
-public class Horse extends Piece {
-  public Horse(String color, int rank, int file) {
-    this.type = "H";
+public class Knight extends Piece {
+  public Knight(String color, int rank, int file) {
+    this.type = "N";
     this.color = color;
     this.rank = rank;
     this.file = file;
