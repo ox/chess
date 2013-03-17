@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 import exceptions.IllegalMoveException;
 import exceptions.IllegalPromotionException;
 
@@ -6,11 +8,17 @@ public class Board {
   // This is the correct layout for the board. The 'origin' is [7][0]
   public BoardSquare[][] squares;
   private King[] kings;
+  private ArrayList<Piece> white_pieces;
+  private ArrayList<Piece> black_pieces;
   
   public Board() {
     String color = "black";
     squares = new BoardSquare[8][8];
     kings = new King[2];
+    
+    // keep track of both black and white's pieces
+    white_pieces = new ArrayList<Piece>();
+    black_pieces = new ArrayList<Piece>();
     
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
@@ -21,41 +29,39 @@ public class Board {
     }
        
     // set up the black pieces
-    for (int j = 0; j < 8; j++) {
-      //squares[6][j].occupy(new Pawn("black", 6, j));
-    }
-    
-//    squares[7][0].occupy(new Rook("black", 7, 0));
-//    squares[7][7].occupy(new Rook("black", 7, 7));
+//    for (int j = 0; j < 8; j++) {
+//      black_pieces.add(squares[6][j].occupy(new Pawn("black", 6, j)));
+//    }
 //    
-//    squares[7][1].occupy(new Horse("black", 7, 1));
-//    squares[7][6].occupy(new Horse("black", 7, 6));
+//    black_pieces.add(squares[7][0].occupy(new Rook("black", 7, 0)));
+//    black_pieces.add(squares[7][7].occupy(new Rook("black", 7, 7)));
 //    
-//    squares[7][2].occupy(new Bishop("black", 7, 2));
-//    squares[7][5].occupy(new Bishop("black", 7, 5));
+//    black_pieces.add(squares[7][1].occupy(new Knight("black", 7, 1)));
+//    black_pieces.add(squares[7][6].occupy(new Knight("black", 7, 6)));
 //    
-//    squares[7][3].occupy(new Queen("black", 7, 3));
-    
-    squares[6][4].occupy(new Pawn("black", 6,4));
-    squares[7][4].occupy(new King("black", 7, 4));
-    kings[1] = (King) squares[7][4].getOccupant();
+//    black_pieces.add(squares[7][2].occupy(new Bishop("black", 7, 2)));
+//    black_pieces.add(squares[7][5].occupy(new Bishop("black", 7, 5)));
+//    
+//    black_pieces.add(squares[7][3].occupy(new Queen("black", 7, 3)));
+//    black_pieces.add(squares[7][4].occupy(new King("black", 7, 4)));
+//    kings[1] = (King) squares[7][4].getOccupant();
 
     // set up the white pieces
-    for (int j = 0; j < 8; j++) {
-      //squares[1][j].occupy(new Pawn("white", 1, j));
-    }
-    
-//    squares[0][0].occupy(new Rook("white", 0, 0));
-//    squares[0][7].occupy(new Rook("white", 0, 7));
+//    for (int j = 0; j < 8; j++) {
+//      white_pieces.add(squares[1][j].occupy(new Pawn("white", 1, j)));
+//    }
 //    
-//    squares[0][1].occupy(new Horse("white", 0, 1));
-//    squares[0][6].occupy(new Horse("white", 0, 6));
+//    white_pieces.add(squares[0][0].occupy(new Rook("white", 0, 0)));
+//    white_pieces.add(squares[0][7].occupy(new Rook("white", 0, 7)));
 //    
-//    squares[0][2].occupy(new Bishop("white", 0, 2));
-//    squares[0][5].occupy(new Bishop("white", 0, 5));
+//    white_pieces.add(squares[0][1].occupy(new Knight("white", 0, 1)));
+//    white_pieces.add(squares[0][6].occupy(new Knight("white", 0, 6)));
 //    
-//    squares[0][3].occupy(new Queen("white", 0, 3));
-//    squares[0][4].occupy(new King("white", 0, 4));
+//    white_pieces.add(squares[0][2].occupy(new Bishop("white", 0, 2)));
+//    white_pieces.add(squares[0][5].occupy(new Bishop("white", 0, 5)));
+//    
+//    white_pieces.add(squares[0][3].occupy(new Queen("white", 0, 3)));
+//    white_pieces.add(squares[0][4].occupy(new King("white", 0, 4)));
 //    kings[0] = (King) squares[0][4].getOccupant();
    }
   
@@ -188,6 +194,10 @@ public class Board {
     int[] pair =  {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'};
     System.out.println(coord + " => {" + pair[0] + ", " + pair[1] + "}" );
     return pair;
+  }
+  
+  public static String rankFileToCoord(int rank, int file) {
+    return (new String[] {"a","b","c","d","e","f","g","h"})[file] + String.valueOf(rank + 1);
   }
   
   public String toString() {

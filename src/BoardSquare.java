@@ -20,8 +20,9 @@ public class BoardSquare {
     this.piece = null;
   }
   
-  public void occupy(Piece piece) {
+  public Piece occupy(Piece piece) {
     this.piece = piece;
+    return this.piece; // so we can CHAIN
   }
   
   public String getColor() {
