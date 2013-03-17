@@ -20,6 +20,14 @@ public class Piece implements Movable {
     return color.equals("white") ? "w" : "b";
   }
   
+  public int rawRank() {
+    return this.rank;
+  }
+  
+  public int rawFile() {
+    return this.file;
+  }
+  
   public String getType() {
     return this.type;
   }

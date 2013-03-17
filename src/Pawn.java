@@ -28,8 +28,6 @@ public class Pawn extends Piece {
       if (this.color == "white" && this.rank == 1 && rank > this.rank) return true;
       if (this.color == "black" && this.rank == 6 && rank < this.rank) return true;
       
-      System.out.println(this.rank + " => " + rank + "; distance = " + String.valueOf(this.rank - rank));
-      
       return false; // otherwise
     }
     

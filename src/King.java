@@ -1,11 +1,36 @@
 
 public class King extends Piece {
+  protected boolean under_check;
+  
   public King(String color, int rank, int file) {
     this.type = "K";
     this.color = color;
     this.rank = rank;
     this.file = file;
     this.times_moved = 0;
+    this.under_check = false;
+  }
+  
+  /**
+   * Is the King under check?
+   * @return The checked'ed-ness of the King
+   */
+  public boolean isUnderCheck() {
+    return this.under_check;
+  }
+  
+  /**
+   * Place a King under check
+   */
+  public void check() {
+    this.under_check = true;
+  }
+  
+  /**
+   * A King has escaped check
+   */
+  public void free() {
+    this.under_check = false;
   }
   
   @Override

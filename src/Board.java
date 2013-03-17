@@ -43,8 +43,9 @@ public class Board {
 //    black_pieces.add(squares[7][5].occupy(new Bishop("black", 7, 5)));
 //    
 //    black_pieces.add(squares[7][3].occupy(new Queen("black", 7, 3)));
-//    black_pieces.add(squares[7][4].occupy(new King("black", 7, 4)));
-//    kings[1] = (King) squares[7][4].getOccupant();
+    black_pieces.add(squares[7][4].occupy(new King("black", 7, 4)));
+    white_pieces.add(squares[5][5].occupy(new Pawn("white", 5, 5)));
+    kings[1] = (King) squares[7][4].getOccupant();
 
     // set up the white pieces
 //    for (int j = 0; j < 8; j++) {
@@ -61,11 +62,11 @@ public class Board {
 //    white_pieces.add(squares[0][5].occupy(new Bishop("white", 0, 5)));
 //    
 //    white_pieces.add(squares[0][3].occupy(new Queen("white", 0, 3)));
-//    white_pieces.add(squares[0][4].occupy(new King("white", 0, 4)));
-//    kings[0] = (King) squares[0][4].getOccupant();
+    white_pieces.add(squares[0][4].occupy(new King("white", 0, 4)));
+    kings[0] = (King) squares[0][4].getOccupant();
    }
   
-  public int movePieceTo(String from, String to) throws IllegalMoveException {
+  public void movePieceTo(String from, String to) throws IllegalMoveException {
     int[] from_pair, to_pair;
     from_pair = coordToRankFilePair(from);
     to_pair = coordToRankFilePair(to);
@@ -100,7 +101,6 @@ public class Board {
           squares[drank][dfile].occupy(piece);
           squares[rank][file].vacate();
           piece.incrMoved();
-          return 2;
         }
       } else {
         // special case for pawns, can't actually move sideways, only attack
@@ -134,11 +134,23 @@ public class Board {
         squares[drank][dfile].occupy(piece);
         squares[rank][file].vacate();
         piece.incrMoved();
-        return 1;
       }
     } else {
       // the piece can't move to there
       throw new IllegalMoveException("piece cannot move from " + from + " to " + to);
+    }
+    
+    checkForCheck();
+  }
+  
+  private void checkForCheck() {
+    for (King king : kings) {
+      System.out.println("checking the " + king.getColor() + " king");
+      if (canPieceBeAttackedAt(king.rawRank(), king.rawFile())) {
+        System.out.println(king + " is under check");
+      } else {
+        System.out.println(king + " is safe");
+      }
     }
   }
   
@@ -154,6 +166,23 @@ public class Board {
       if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
       if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
     }
+    return false;
+  }
+  
+  public boolean canPieceBeAttackedAt(int rank, int file) {
+    Piece piece = squares[rank][file].getOccupant();
+    
+    ArrayList<Piece> enemy = (piece.getColor().equals("w") ? black_pieces : white_pieces);
+    
+    for (Piece e : enemy) {
+      System.out.println("checking " + e);
+      if (e.canMoveTo(rank, file)) {
+        return true;
+      } else {
+        System.out.println(e + " cannot move to " + piece);
+      }
+    }
+    
     return false;
   }
   
