@@ -16,5 +16,4 @@ public class Rook extends Piece {
     if (Math.abs(file - this.file) > 0 && rank == this.rank) return true;
     return false;
   }
-
 }
