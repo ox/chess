@@ -4,7 +4,7 @@ public class Board {
   private King[] kings;
   
   public Board() {
-    String color = "white";
+    String color = "black";
     squares = new BoardSquare[8][8];
     kings = new King[2];
     
@@ -18,47 +18,39 @@ public class Board {
     
     // set up the black pieces
     for (int j = 0; j < 8; j++) {
-      squares[1][j].occupy(new Pawn("black", j, 1));
+      squares[1][j].occupy(new Pawn("white", j, 1));
     }
     
-    squares[0][0].occupy(new Rook("black", 0, 0));
-    squares[0][7].occupy(new Rook("black", 0, 7));
+    squares[0][0].occupy(new Rook("white", 0, 0));
+    squares[0][7].occupy(new Rook("white", 0, 7));
     
-    squares[0][1].occupy(new Horse("black", 0, 1));
-    squares[0][6].occupy(new Horse("black", 0, 6));
+    squares[0][1].occupy(new Horse("white", 0, 1));
+    squares[0][6].occupy(new Horse("white", 0, 6));
     
-    squares[0][2].occupy(new Bishop("black", 0, 2));
-    squares[0][5].occupy(new Bishop("black", 0, 5));
+    squares[0][2].occupy(new Bishop("white", 0, 2));
+    squares[0][5].occupy(new Bishop("white", 0, 5));
     
-    squares[0][3].occupy(new Queen("black", 0, 3));
-    squares[0][4].occupy(new King("black", 0, 4));
+    squares[0][3].occupy(new Queen("white", 0, 3));
+    squares[0][4].occupy(new King("white", 0, 4));
     kings[0] = (King) squares[0][4].getOccupant();
     
     // set up the white pieces
     for (int j = 0; j < 8; j++) {
-      squares[6][j].occupy(new Pawn("white", j, 1));
+      squares[6][j].occupy(new Pawn("black", j, 1));
     }
     
-    squares[7][0].occupy(new Rook("white", 7, 0));
-    squares[7][7].occupy(new Rook("white", 7, 7));
+    squares[7][0].occupy(new Rook("black", 7, 0));
+    squares[7][7].occupy(new Rook("black", 7, 7));
     
-    squares[7][1].occupy(new Horse("white", 7, 1));
-    squares[7][6].occupy(new Horse("white", 7, 6));
+    squares[7][1].occupy(new Horse("black", 7, 1));
+    squares[7][6].occupy(new Horse("black", 7, 6));
     
-    squares[7][2].occupy(new Bishop("white", 7, 2));
-    squares[7][5].occupy(new Bishop("white", 7, 5));
+    squares[7][2].occupy(new Bishop("black", 7, 2));
+    squares[7][5].occupy(new Bishop("black", 7, 5));
     
-    squares[7][3].occupy(new Queen("white", 7, 3));
-    squares[7][4].occupy(new King("white", 7, 4));
+    squares[7][3].occupy(new Queen("black", 7, 3));
+    squares[7][4].occupy(new King("black", 7, 4));
     kings[1] = (King) squares[7][4].getOccupant();
-  }
-  
-  public void flipBoard() {
-    for (int i = 0; i < 4; i++) {
-      BoardSquare[] temp_row = squares[i];
-      squares[i] = squares[7-i];
-      squares[7-i] = temp_row;
-    }
   }
   
   public int movePieceTo(int rank, int file, int drank, int dfile) {
@@ -81,8 +73,8 @@ public class Board {
     
     if (piece.canMoveTo(drank, dfile) && squares[rank][file] != null) {
       if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
-        // the piece cannot capture it's own bretheren
-        return 1;
+        // the piece cannot capture it's own brethren
+        return -4;
       } else {
         // there is a capture happening!!!
         squares[drank][dfile].occupy(piece);
@@ -113,8 +105,8 @@ public class Board {
   public String toString() {
     String ret = "   a  b  c  d  e  f  g  h\n";
     
-    for (int i = 0; i < 8; i++) {
-      ret = ret.concat(String.valueOf(8 - i) + " ");
+    for (int i = 7; i >= 0; i--) {
+      ret = ret.concat(String.valueOf(i + 1) + " ");
       for (int j = 0; j < 8; j++) {
         ret = ret.concat(squares[i][j].toString() + " ");
       }

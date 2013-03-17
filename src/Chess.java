@@ -26,23 +26,17 @@ public class Chess {
     return (current_player.equals("1") ? "2" : "1");
   }
   
-  private static int[] reverseCoordinates(int rank, String file) {
-    int mirrored_rank = 8 - rank;
-    int mirrored_file = 8 - (file.charAt(0) - 'a');
-    return (new int[] {mirrored_rank, mirrored_file});
-  }
-  
   /**
-   * Turns a FileRank pair into indices in the form {rank, file}.
+   * Turns a FileRank pair into indices in the form {rank, file}. It's right, trust me.
    * 
    * Example:
    *  a1 => {0,0}
-   *  g8 => {7,6}
+   *  d7 => {6,3}
    * 
    * @param coord
    * @return
    */
   private static int[] coordToRankFilePair(String coord) {
-    return (new int[] {coord.charAt(1) - '1', coord.charAt(0) - 'a'});
+    return (new int[] {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'});
   }
 }
