@@ -21,40 +21,41 @@ public class Board {
        
     // set up the black pieces
     for (int j = 0; j < 8; j++) {
-      squares[6][j].occupy(new Pawn("black", 6, j));
+      //squares[6][j].occupy(new Pawn("black", 6, j));
     }
     
-    squares[7][0].occupy(new Rook("black", 7, 0));
-    squares[7][7].occupy(new Rook("black", 7, 7));
+//    squares[7][0].occupy(new Rook("black", 7, 0));
+//    squares[7][7].occupy(new Rook("black", 7, 7));
+//    
+//    squares[7][1].occupy(new Horse("black", 7, 1));
+//    squares[7][6].occupy(new Horse("black", 7, 6));
+//    
+//    squares[7][2].occupy(new Bishop("black", 7, 2));
+//    squares[7][5].occupy(new Bishop("black", 7, 5));
+//    
+//    squares[7][3].occupy(new Queen("black", 7, 3));
     
-    squares[7][1].occupy(new Horse("black", 7, 1));
-    squares[7][6].occupy(new Horse("black", 7, 6));
-    
-    squares[7][2].occupy(new Bishop("black", 7, 2));
-    squares[7][5].occupy(new Bishop("black", 7, 5));
-    
-    squares[7][3].occupy(new Queen("black", 7, 3));
+    squares[6][4].occupy(new Pawn("black", 6,4));
     squares[7][4].occupy(new King("black", 7, 4));
     kings[1] = (King) squares[7][4].getOccupant();
 
     // set up the white pieces
-    
     for (int j = 0; j < 8; j++) {
-      squares[1][j].occupy(new Pawn("white", 1, j));
+      //squares[1][j].occupy(new Pawn("white", 1, j));
     }
     
-    squares[0][0].occupy(new Rook("white", 0, 0));
-    squares[0][7].occupy(new Rook("white", 0, 7));
-    
-    squares[0][1].occupy(new Horse("white", 0, 1));
-    squares[0][6].occupy(new Horse("white", 0, 6));
-    
-    squares[0][2].occupy(new Bishop("white", 0, 2));
-    squares[0][5].occupy(new Bishop("white", 0, 5));
-    
-    squares[0][3].occupy(new Queen("white", 0, 3));
-    squares[0][4].occupy(new King("white", 0, 4));
-    kings[0] = (King) squares[0][4].getOccupant();
+//    squares[0][0].occupy(new Rook("white", 0, 0));
+//    squares[0][7].occupy(new Rook("white", 0, 7));
+//    
+//    squares[0][1].occupy(new Horse("white", 0, 1));
+//    squares[0][6].occupy(new Horse("white", 0, 6));
+//    
+//    squares[0][2].occupy(new Bishop("white", 0, 2));
+//    squares[0][5].occupy(new Bishop("white", 0, 5));
+//    
+//    squares[0][3].occupy(new Queen("white", 0, 3));
+//    squares[0][4].occupy(new King("white", 0, 4));
+//    kings[0] = (King) squares[0][4].getOccupant();
    }
   
   public int movePieceTo(String from, String to) throws Exception {
@@ -81,11 +82,12 @@ public class Board {
       // is there someone there?
       if (squares[drank][dfile].getOccupant() != null) {
         // is it one of our own pieces?
-        if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
+        if (squares[drank][dfile].getOccupant().getColor() == piece.getColor()) {
           // the piece cannot capture it's own brethren
           throw new IllegalMoveException("cannot capture own piece");
         } else {
           // there is a capture happening!!!
+          System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
           squares[drank][dfile].occupy(piece);
           squares[rank][file].vacate();
           checkForUpgrades();

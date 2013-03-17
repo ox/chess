@@ -5,8 +5,7 @@ public class Chess {
     String player_turn = "1";
 
     try {
-      board.movePieceTo("d7", "d5");
-      board.movePieceTo("d2", "d4");
+      board.movePieceTo("e8", "f7");
     } catch (Exception e) {
       System.out.println("Error moving: " + e.getMessage());
     }
