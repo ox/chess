@@ -101,6 +101,29 @@ public class Board {
         if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
           throw new IllegalMoveException("pawns can't move diagonally, only attack");
         }
+        // black castle e8 g8
+        if (piece.getClass().equals((King .class))
+            && piece.neverMoved()
+            && squares[7][7].getOccupant().getClass().equals((Rook .class))
+            && squares[7][7].getOccupant().neverMoved()) {
+          // TODO need to check if the king is in danger between those spots
+          squares[rank][file].vacate();
+          squares[drank][dfile].occupy(piece);
+          squares[drank][dfile-1].occupy(squares[drank][dfile+1].getOccupant());
+          squares[drank][dfile+1].vacate();
+        }
+        
+        // black castle e8 c8
+        if (piece.getClass().equals((King .class))
+            && piece.neverMoved()
+            && squares[7][0].getOccupant().getClass().equals((Rook .class))
+            && squares[7][0].getOccupant().neverMoved()) {
+          // TODO need to check if the king is in danger between those spots
+          squares[rank][file].vacate();
+          squares[drank][dfile].occupy(piece);
+          squares[drank][dfile+1].occupy(squares[drank][dfile-2].getOccupant());
+          squares[drank][dfile-2].vacate();
+        }
         
         squares[drank][dfile].occupy(piece);
         squares[rank][file].vacate();
