@@ -1,3 +1,5 @@
+import exceptions.IllegalMoveException;
+
 
 public class Board {
   private BoardSquare[][] squares;
@@ -15,8 +17,27 @@ public class Board {
       }
       color = (color == "white" ? "black" : "white" );
     }
-    
+       
     // set up the black pieces
+    for (int j = 0; j < 8; j++) {
+      squares[6][j].occupy(new Pawn("black", 6, j));
+    }
+    
+    squares[7][0].occupy(new Rook("black", 7, 0));
+    squares[7][7].occupy(new Rook("black", 7, 7));
+    
+    squares[7][1].occupy(new Horse("black", 7, 1));
+    squares[7][6].occupy(new Horse("black", 7, 6));
+    
+    squares[7][2].occupy(new Bishop("black", 7, 2));
+    squares[7][5].occupy(new Bishop("black", 7, 5));
+    
+    squares[7][3].occupy(new Queen("black", 7, 3));
+    squares[7][4].occupy(new King("black", 7, 4));
+    kings[1] = (King) squares[7][4].getOccupant();
+
+    // set up the white pieces
+    /*
     for (int j = 0; j < 8; j++) {
       squares[1][j].occupy(new Pawn("white", j, 1));
     }
@@ -32,28 +53,10 @@ public class Board {
     
     squares[0][3].occupy(new Queen("white", 0, 3));
     squares[0][4].occupy(new King("white", 0, 4));
-    kings[0] = (King) squares[0][4].getOccupant();
-    
-    // set up the white pieces
-    for (int j = 0; j < 8; j++) {
-      squares[6][j].occupy(new Pawn("black", j, 1));
-    }
-    
-    squares[7][0].occupy(new Rook("black", 7, 0));
-    squares[7][7].occupy(new Rook("black", 7, 7));
-    
-    squares[7][1].occupy(new Horse("black", 7, 1));
-    squares[7][6].occupy(new Horse("black", 7, 6));
-    
-    squares[7][2].occupy(new Bishop("black", 7, 2));
-    squares[7][5].occupy(new Bishop("black", 7, 5));
-    
-    squares[7][3].occupy(new Queen("black", 7, 3));
-    squares[7][4].occupy(new King("black", 7, 4));
-    kings[1] = (King) squares[7][4].getOccupant();
-  }
+    kings[0] = (King) squares[0][4].getOccupant(); */
+   }
   
-  public int movePieceTo(String from, String to) {
+  public int movePieceTo(String from, String to) throws Exception {
     int[] from_pair, to_pair;
     from_pair = coordToRankFilePair(from);
     to_pair = coordToRankFilePair(to);
@@ -64,27 +67,22 @@ public class Board {
     Piece piece = squares[rank][file].getOccupant();
     
     // there is no piece at the source square
-    if (piece == null) return -1;
+    if (piece == null) throw new IllegalMoveException("piece at " + from + " does not exist");
     // the source is outside the bounds of the board
-    if (rank < 0 || file < 0 || rank > 7 || file > 7) return -2;
+    if (rank < 0 || file < 0 || rank > 7 || file > 7) throw new IllegalMoveException(from + " is outside the board's bounds");
     // the destination is outside the bounds of the board
-    if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) return -3;
+    if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) throw new IllegalMoveException(to + " is outside the board's bounds");
     
-    // just move the piece
-    if (piece.canMoveTo(drank, dfile) && squares[rank][file] == null) {
-      squares[drank][dfile].occupy(piece);
-      squares[rank][file].vacate();
-      checkForUpgrades();
-      return 0;
-    }
+    boolean piece_ret = piece.canMoveTo(drank, dfile);
+    System.out.println("piece: " + piece_ret);
     
-    if (piece.canMoveTo(drank, dfile)) {
+    if (piece_ret) {
       // is there someone there?
       if (squares[drank][dfile].getOccupant() != null) {
         // is it one of our own pieces?
         if (squares[rank][file].getOccupant().getColor().equals(piece.color)) {
           // the piece cannot capture it's own brethren
-          return -4;
+          throw new IllegalMoveException("cannot capture own piece");
         } else {
           // there is a capture happening!!!
           squares[drank][dfile].occupy(piece);
@@ -93,15 +91,19 @@ public class Board {
           return 2;
         }
       } else {
-        // just move
-        squares[rank][file].vacate();
+        // special case for pawns, can't actually move sideways, only attack
+        if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
+          throw new IllegalMoveException("pawns can't move diagonally, only attack");
+        }
+        
         squares[drank][dfile].occupy(piece);
+        squares[rank][file].vacate();
         checkForUpgrades();
         return 1;
       }
     } else {
       // the piece can't move to there
-      return 3;
+      throw new IllegalMoveException("piece cannot move from " + from + " to " + to);
     }
   }
   
@@ -130,7 +132,9 @@ public class Board {
    * @return
    */
   private static int[] coordToRankFilePair(String coord) {
-    return (new int[] {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'});
+    int[] pair =  {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'};
+    System.out.println(coord + " => {" + pair[0] + ", " + pair[1] + "}" );
+    return pair;
   }
   
   public String toString() {
