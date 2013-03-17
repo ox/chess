@@ -9,7 +9,7 @@ public class BoardSquare {
   }
   
   public boolean isOccupied() {
-    return piece == null;
+    return piece != null;
   }
   
   public Piece getOccupant() {

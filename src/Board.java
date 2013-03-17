@@ -79,6 +79,11 @@ public class Board {
     System.out.println("piece: " + piece_ret);
     
     if (piece_ret) {
+      // are there any pieces in between if we are not a horse?
+      if (!piece.getClass().equals(Horse .class) && piecesBetween(rank, file, drank, dfile)) {
+        throw new IllegalMoveException("there are pieces between " + from + " and " + to);
+      }
+      
       // is there someone there?
       if (squares[drank][dfile].getOccupant() != null) {
         // is it one of our own pieces?
@@ -110,7 +115,21 @@ public class Board {
     }
   }
   
-  public void checkForUpgrades() {
+  private boolean piecesBetween(int rank, int file, int drank, int dfile) {
+    int r = rank, f = file;
+    
+    while ( r != drank || f != dfile ) {
+      // move first, so we aren't on the starting square
+      if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
+      if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
+      
+      // if there is a piece and it's not the one we start on, then return true
+      if (squares[r][f].getOccupant() != null) return true;
+    }
+    return false;
+  }
+  
+  private void checkForUpgrades() {
     // are there pawns that need to become queens at the ends of the board
     for (int i = 0; i < 8; i+=7) {
       for (int j = 0; j < 8; j++) {
