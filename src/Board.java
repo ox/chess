@@ -2,7 +2,8 @@ import exceptions.IllegalMoveException;
 
 
 public class Board {
-  private BoardSquare[][] squares;
+  // This is the correct layout for the board. The 'origin' is [7][0]
+  public BoardSquare[][] squares;
   private King[] kings;
   
   public Board() {
@@ -37,9 +38,9 @@ public class Board {
     kings[1] = (King) squares[7][4].getOccupant();
 
     // set up the white pieces
-    /*
+    
     for (int j = 0; j < 8; j++) {
-      squares[1][j].occupy(new Pawn("white", j, 1));
+      squares[1][j].occupy(new Pawn("white", 1, j));
     }
     
     squares[0][0].occupy(new Rook("white", 0, 0));
@@ -53,7 +54,7 @@ public class Board {
     
     squares[0][3].occupy(new Queen("white", 0, 3));
     squares[0][4].occupy(new King("white", 0, 4));
-    kings[0] = (King) squares[0][4].getOccupant(); */
+    kings[0] = (King) squares[0][4].getOccupant();
    }
   
   public int movePieceTo(String from, String to) throws Exception {

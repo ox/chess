@@ -4,9 +4,9 @@ public class Chess {
     Board board = new Board();
     String player_turn = "1";
 
-    String from = "d7", to = "d5";
     try {
-      System.out.println("board: " + board.movePieceTo(from, to) + "\n");
+      board.movePieceTo("d7", "d5");
+      board.movePieceTo("d2", "d4");
     } catch (Exception e) {
       System.out.println("Error moving: " + e.getMessage());
     }
