@@ -76,68 +76,64 @@ public class Board {
     
     Piece piece = squares[rank][file].getOccupant();
     
-    // there is no piece at the source square
-    if (piece == null) throw new IllegalMoveException("piece at " + from + " does not exist");
-    // the source is outside the bounds of the board
-    if (rank < 0 || file < 0 || rank > 7 || file > 7) throw new IllegalMoveException(from + " is outside the board's bounds");
-    // the destination is outside the bounds of the board
-    if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) throw new IllegalMoveException(to + " is outside the board's bounds");
-    
-    if (piece.canMoveTo(drank, dfile)) {
-      // are there any pieces in between if we are not a knight?
-      if (!piece.getClass().equals(Knight .class) && piecesBetween(rank, file, drank, dfile)) {
-        throw new IllegalMoveException("there are pieces between " + from + " and " + to);
-      }
-      
-      // is there someone there?
-      if (squares[drank][dfile].getOccupant() != null) {
-        // is it one of our own pieces?
-        if (squares[drank][dfile].getOccupant().getColor() == piece.getColor()) {
-          // the piece cannot capture it's own brethren
-          throw new IllegalMoveException("cannot capture own piece");
-        } else {
-          // there is a capture happening!!!
-          System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
-          squares[drank][dfile].occupy(piece);
-          squares[rank][file].vacate();
-          piece.incrMoved();
-        }
+    if (piece == null) 
+      throw new IllegalMoveException("piece at " + from + " does not exist");
+    if (rank < 0 || file < 0 || rank > 7 || file > 7) 
+      throw new IllegalMoveException(from + " is outside the board's bounds");
+    if (drank < 0 || dfile < 0 || drank > 7 || dfile > 7) 
+      throw new IllegalMoveException(to + " is outside the board's bounds");
+    if (!piece.canMoveTo(drank, dfile))
+      throw new IllegalMoveException("piece cannot move from " + from + " to " + to);
+
+    // are there any pieces in between if we are not a knight?
+    if (!piece.getClass().equals(Knight .class) && piecesBetween(rank, file, drank, dfile))
+      throw new IllegalMoveException("there are pieces between " + from + " and " + to);
+
+    // is there someone there?
+    if (squares[drank][dfile].getOccupant() != null) {
+      // is it one of our own pieces?
+      if (squares[drank][dfile].getOccupant().getColor() == piece.getColor()) {
+        // the piece cannot capture it's own brethren
+        throw new IllegalMoveException("cannot capture own piece");
       } else {
-        // special case for pawns, can't actually move sideways, only attack
-        if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
-          throw new IllegalMoveException("pawns can't move diagonally, only attack");
-        }
-        // black castle e8 g8
-        if (piece.getClass().equals((King .class))
-            && piece.neverMoved()
-            && squares[7][7].getOccupant().getClass().equals((Rook .class))
-            && squares[7][7].getOccupant().neverMoved()) {
-          // TODO need to check if the king is in danger between those spots
-          squares[rank][file].vacate();
-          squares[drank][dfile].occupy(piece);
-          squares[drank][dfile-1].occupy(squares[drank][dfile+1].getOccupant());
-          squares[drank][dfile+1].vacate();
-        }
-        
-        // black castle e8 c8
-        if (piece.getClass().equals((King .class))
-            && piece.neverMoved()
-            && squares[7][0].getOccupant().getClass().equals((Rook .class))
-            && squares[7][0].getOccupant().neverMoved()) {
-          // TODO need to check if the king is in danger between those spots
-          squares[rank][file].vacate();
-          squares[drank][dfile].occupy(piece);
-          squares[drank][dfile+1].occupy(squares[drank][dfile-2].getOccupant());
-          squares[drank][dfile-2].vacate();
-        }
-        
+        // there is a capture happening!!!
+        System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
         squares[drank][dfile].occupy(piece);
         squares[rank][file].vacate();
         piece.incrMoved();
       }
     } else {
-      // the piece can't move to there
-      throw new IllegalMoveException("piece cannot move from " + from + " to " + to);
+      // special case for pawns, can't actually move sideways, only attack
+      if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
+        throw new IllegalMoveException("pawns can't move diagonally, only attack");
+      }
+      // black castle e8 g8
+      if (piece.getClass().equals((King .class))
+          && piece.neverMoved()
+          && squares[7][7].getOccupant().getClass().equals((Rook .class))
+          && squares[7][7].getOccupant().neverMoved()) {
+        // TODO need to check if the king is in danger between those spots
+        squares[rank][file].vacate();
+        squares[drank][dfile].occupy(piece);
+        squares[drank][dfile-1].occupy(squares[drank][dfile+1].getOccupant());
+        squares[drank][dfile+1].vacate();
+      }
+
+      // black castle e8 c8
+      if (piece.getClass().equals((King .class))
+          && piece.neverMoved()
+          && squares[7][0].getOccupant().getClass().equals((Rook .class))
+          && squares[7][0].getOccupant().neverMoved()) {
+        // TODO need to check if the king is in danger between those spots
+        squares[rank][file].vacate();
+        squares[drank][dfile].occupy(piece);
+        squares[drank][dfile+1].occupy(squares[drank][dfile-2].getOccupant());
+        squares[drank][dfile-2].vacate();
+      }
+
+      squares[drank][dfile].occupy(piece);
+      squares[rank][file].vacate();
+      piece.incrMoved();
     }
     
     checkForCheck();
@@ -180,6 +176,14 @@ public class Board {
         return true;
       } else {
         System.out.println(e + " cannot move to " + piece);
+        System.out.println(e + " can move to:");
+        ArrayList<String> moves = e.availableMovesFrom(rank, file);
+        
+        for (String move : moves) {
+          System.out.print(move + ", ");
+        }
+        
+        System.out.println("");
       }
     }
     

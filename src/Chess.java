@@ -3,6 +3,8 @@ public class Chess {
   public static void main(String[] argv) {
     Board board = new Board();
     String player_turn = "black";
+    
+    System.out.println(board);
 
     try {
       board.movePieceTo("f6", "f7");

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 
 public class Piece implements Movable {
   protected int file, rank, times_moved;
@@ -34,7 +36,7 @@ public class Piece implements Movable {
   
   public String getFile() {
     // lol tricks
-    return (String) (new Object[] {'a', 'b','c','d','e','f','g','h'})[this.file];
+    return (new String[] {"a", "b","c","d","e","f","g","h"})[this.file];
   }
   
   public String getRank() {
@@ -51,7 +53,19 @@ public class Piece implements Movable {
   }
   
   @Override
-  public String[] availableMovesFrom(int rank, int file) {
-    return null;
+  public ArrayList<String> availableMovesFrom(int rank, int file) {
+    ArrayList<String> spaces = new ArrayList<String>();
+    String[] files = {"a", "b","c","d","e","f","g","h"};
+    
+    for (int r = 0; r < 8; r++) {
+      for (int f = 0; f < 8; f++) {
+        if (this.canMoveTo(r, f)) {
+          spaces.add(files[f] + String.valueOf(r+1) );
+        }
+      }
+      
+    }
+    
+    return spaces;
   }
 }

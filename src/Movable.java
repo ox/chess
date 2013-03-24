@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 
 public interface Movable {
   /**
@@ -30,5 +31,5 @@ public interface Movable {
    * @param file
    * @return
    */
-  public String[] availableMovesFrom(int rank, int file);
+  public ArrayList<String> availableMovesFrom(int rank, int file);
 }
