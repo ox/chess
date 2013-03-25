@@ -136,18 +136,15 @@ public class Board {
       int check = 0;
       
       if (canPieceBeAttackedAt(king, king.rawRank(), king.rawFile())) {
-        check = 2;
+        check = 2; // assume mate
         
-        for (String move : king.availableMoves()) {
-          int[] pair = coordToRankFilePair(move);
-          
-          if (!canPieceBeAttackedAt(king, pair)) { // we can't be attacked there
-            Piece occupant = squares[pair[0]][pair[1]].getOccupant();
-            if (occupant != null) { // the square isn't empty
-              // if the king can attack that piece successfully without being in check
-              if (king.isEnemiesWith(occupant)) {
-                check = 1;
-              }
+        for (String potential_move : king.availableMoves()) { // for all the moves the king can make   
+          if (!canPieceBeAttackedAt(king, potential_move)) { // if we can't be attacked there
+            check = 1;
+            
+            if (getOccupantAt(potential_move) != null
+                && king.isFriendsWith(getOccupantAt(potential_move))) {
+              check = 2;
             }
           }
         }
@@ -173,7 +170,7 @@ public class Board {
     
     while ( r != drank || f != dfile ) {
       // if there is a piece and it's not the one we start on, then return true
-      if (squares[r][f].getOccupant() != null) return true;
+      if (getOccupantAt(r, f) != null) return true;
       
       if (rank-drank != 0) r += (drank-rank)/Math.abs(rank-drank);
       if (file-dfile != 0) f += (dfile-file)/Math.abs(dfile-file);
@@ -181,11 +178,27 @@ public class Board {
     return false;
   }
   
-  public boolean canPieceBeAttackedAt(Piece piece, int[] rankFilePair) {
+  private Piece getOccupantAt(String fileRank) {
+    return getOccupantAt(coordToRankFilePair(fileRank));
+  }
+  
+  private Piece getOccupantAt(int[] rankFilePair) {
+    return getOccupantAt(rankFilePair[0], rankFilePair[1]);
+  }
+  
+  private Piece getOccupantAt(int rank, int file) {
+    return squares[rank][file].getOccupant();
+  }
+  
+  private boolean canPieceBeAttackedAt(Piece piece, String fileRank) {
+    return canPieceBeAttackedAt(piece, coordToRankFilePair(fileRank));
+  }
+  
+  private boolean canPieceBeAttackedAt(Piece piece, int[] rankFilePair) {
     return canPieceBeAttackedAt(piece, rankFilePair[0], rankFilePair[1]);
   }
   
-  public boolean canPieceBeAttackedAt(Piece piece, int rank, int file) {
+  private boolean canPieceBeAttackedAt(Piece piece, int rank, int file) {
     if (piece == null) return false;
     
     ArrayList<Piece> enemy = (piece.getColor().equals("w") ? black_pieces : white_pieces);

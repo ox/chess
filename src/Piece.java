@@ -57,7 +57,12 @@ public class Piece implements Movable {
   }
   
   public boolean isEnemiesWith(Piece piece) {
+    if (piece == null) return false;
     return !piece.getColor().equals(color);
+  }
+  
+  public boolean isFriendsWith(Piece piece) {
+    return !isEnemiesWith(piece);
   }
 
   @Override

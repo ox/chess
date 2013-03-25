@@ -10,6 +10,8 @@ public class Queen extends Piece {
   
   @Override
   public boolean canMoveTo(int rank, int file) {
+    if (rank == this.rank && file == this.file) return false;
+    
     // move diagonally
     if (Math.abs(rank - this.rank) == Math.abs(file - this.file)) return true;
     

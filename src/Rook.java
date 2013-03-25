@@ -10,6 +10,8 @@ public class Rook extends Piece {
   
   @Override
   public boolean canMoveTo(int rank, int file) {
+    if (rank == this.rank && file == this.file) return false;
+    
     // move vertically
     if (Math.abs(rank - this.rank) > 0 && file == this.file) return true;
     

@@ -10,6 +10,8 @@ public class Knight extends Piece {
   
   @Override
   public boolean canMoveTo(int rank, int file) {
+    if (rank == this.rank && file == this.file) return false;
+    
     // can't move diagonally
     if (Math.abs(rank - this.rank) == Math.abs(file - this.file)) return false;
     

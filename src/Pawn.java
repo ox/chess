@@ -31,6 +31,8 @@ public class Pawn extends Piece {
   
   @Override
   public boolean canMoveTo(int rank, int file) {
+    if (rank == this.rank && file == this.file) return false;
+    
     // general movement first, pawns can't move more than 2 spaces ever
     if (Math.abs(rank - this.rank) > 2) return false;
     

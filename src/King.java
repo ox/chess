@@ -35,6 +35,8 @@ public class King extends Piece {
   
   @Override
   public boolean canMoveTo(int rank, int file) {
+    if (rank == this.rank && file == this.file) return false;
+    
     // if we are moving left or right horizontally and haven't moved yet, this is probably
     // a castle. We don't know if we pass any dangerous squares so we'll return true and
     // let the Board figure that out
