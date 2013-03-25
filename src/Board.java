@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import com.sun.org.apache.bcel.internal.generic.ISUB;
+
 import exceptions.IllegalMoveException;
 import exceptions.IllegalPromotionException;
 
@@ -57,7 +59,7 @@ public class Board {
 //    squares[0][1].occupy(new Knight("white", 0, 1));
 //    squares[0][6].occupy(new Knight("white", 0, 6));
 //    
-//    squares[0][2].occupy(new Bishop("white", 0, 2));
+    squares[0][2].occupy(new Bishop("white", 0, 2));
 //    squares[0][5].occupy(new Bishop("white", 0, 5));
 //    
     squares[0][3].occupy(new Queen("white", 0, 3));
@@ -120,6 +122,18 @@ public class Board {
       if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
         throw new IllegalMoveException("pawns can't move diagonally, only attack");
       }
+      
+      if (piece.getClass().equals((King .class))) {
+        King tking = checkForCheckAndMate((King) piece, drank, dfile);
+        
+        if (((King) piece).isUnderCheck() && canPieceBeAttackedAt(tking, drank, dfile)) {
+          throw new IllegalMoveException("king will be under check there");
+        }
+        
+        if (((King) piece).isUnderMate()) {
+          throw new IllegalMoveException("king us under mate, " + piece.getColor() + " wins");
+        }
+      }
 
       piece.moveTo(drank, dfile);
       squares[drank][dfile].occupy(piece);
@@ -128,39 +142,51 @@ public class Board {
       System.out.println("moved " + piece + " from " + from + " to " + to);
     }
     
-    checkForCheckAndMate();
+    King king = (piece.getColor().equals("w") ? kings[1] : kings[0]);
+    checkForCheckAndMate(king);
   }
   
-  private void checkForCheckAndMate() {
-    for (King king : kings) {
-      int check = 0;
-      
-      if (canPieceBeAttackedAt(king, king.rawRank(), king.rawFile())) {
-        check = 2; // assume mate
-        
-        for (String potential_move : king.availableMoves()) { // for all the moves the king can make   
-          if (!canPieceBeAttackedAt(king, potential_move)) { // if we can't be attacked there
-            check = 1;
-            
-            if (getOccupantAt(potential_move) != null
-                && king.isFriendsWith(getOccupantAt(potential_move))) {
-              check = 2;
-            }
+  private King checkForCheckAndMate(King king) {
+    return checkForCheckAndMate(king, king.rawRank(), king.rawFile());
+  }
+  
+  private King checkForCheckAndMate(King king, int drank, int dfile) {
+    int check = 0;
+
+    if (canPieceBeAttackedAt(king, drank, dfile)) {
+      check = 2; // assume mate
+
+      for (String potential_move : king.availableMoves()) { // for all the moves the king can make   
+        if (!canPieceBeAttackedAt(king, potential_move)) { // if we can't be attacked there
+          check = 1;
+
+          if (getOccupantAt(potential_move) != null
+              && king.isFriendsWith(getOccupantAt(potential_move))) {
+            check = 2;
           }
         }
-        
-        switch (check) {
-          case 1:
-            System.out.println(king + " is under check");
-            break;
-          case 2:
-            System.out.println(king + " is under check mate");
-            break;
-        }
-      } else {
-        System.out.println(king + " is safe");
       }
+
+      switch (check) {
+        case 1:
+          System.out.println(king + " is under check");
+          king.check();
+          break;
+        case 2:
+          System.out.println(king + " is under check mate");
+          king.mate();
+          break;
+      }
+    } else {
+      System.out.println(king + " is safe");
+      king.free();
     }
+    
+    return king;
+  }
+  
+  private boolean canPieceMoveTo(Piece piece, int rank, int file) {
+    return !piecesBetween(piece.rawRank(), piece.rawFile(), rank, file);
   }
   
   private boolean piecesBetween(int rank, int file, int drank, int dfile) {
@@ -204,19 +230,19 @@ public class Board {
     ArrayList<Piece> enemy = (piece.getColor().equals("w") ? black_pieces : white_pieces);
     
     for (Piece e : enemy) {
-      System.out.println("checking " + e);
+//      System.out.println("checking " + e);
       if (e.canAttack(rank, file)) {
         return true;
       } else {
-        System.out.println(e + " at " + e.getFileRank() + " cannot attack " + piece + " at " + piece.getFileRank());
-        System.out.println(e + " can move to:");
-        ArrayList<String> moves = e.availableMoves();
-        
-        for (String move : moves) {
-          System.out.print(move + " ");
-        }
-        
-        System.out.println("");
+//        System.out.println(e + " at " + e.getFileRank() + " cannot attack " + piece + " at " + piece.getFileRank());
+//        System.out.println(e + " can move to:");
+//        ArrayList<String> moves = e.availableMoves();
+//        
+//        for (String move : moves) {
+//          System.out.print(move + " ");
+//        }
+//        
+//        System.out.println("");
       }
     }
     
@@ -244,6 +270,19 @@ public class Board {
         }
       }
     }
+  }
+  
+  public boolean pieceBelongsToPlayer(String loc, String player) {
+    return getOccupantAt(loc).getColor().equals(player.substring(0, 1));
+  }
+  
+  public King matedKing() {
+    for (King king : kings) {
+      if (king.isUnderMate()) {
+        return king;
+      }
+    }
+    return null;
   }
   
   /**

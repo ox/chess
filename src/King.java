@@ -1,6 +1,6 @@
 
 public class King extends Piece {
-  protected boolean under_check;
+  protected boolean under_check, under_mate;
   
   public King(String color, int rank, int file) {
     this.type = "K";
@@ -19,11 +19,19 @@ public class King extends Piece {
     return this.under_check;
   }
   
+  public boolean isUnderMate() {
+    return this.under_mate;
+  }
+  
   /**
    * Place a King under check
    */
   public void check() {
     this.under_check = true;
+  }
+  
+  public void mate() {
+    this.under_mate = true;
   }
   
   /**
