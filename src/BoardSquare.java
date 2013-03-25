@@ -22,7 +22,7 @@ public class BoardSquare {
   
   public Piece occupy(Piece piece) {
     this.piece = piece;
-    return this.piece; // so we can CHAIN
+    return piece; // so we can CHAIN
   }
   
   public String getColor() {

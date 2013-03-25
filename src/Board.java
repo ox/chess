@@ -30,43 +30,55 @@ public class Board {
        
     // set up the black pieces
 //    for (int j = 0; j < 8; j++) {
-//      black_pieces.add(squares[6][j].occupy(new Pawn("black", 6, j)));
+//      squares[6][j].occupy(new Pawn("black", 6, j));
 //    }
 //    
-//    black_pieces.add(squares[7][0].occupy(new Rook("black", 7, 0)));
-//    black_pieces.add(squares[7][7].occupy(new Rook("black", 7, 7)));
+//    squares[7][0].occupy(new Rook("black", 7, 0));
+//    squares[7][7].occupy(new Rook("black", 7, 7));
 //    
-//    black_pieces.add(squares[7][1].occupy(new Knight("black", 7, 1)));
-//    black_pieces.add(squares[7][6].occupy(new Knight("black", 7, 6)));
+//    squares[7][1].occupy(new Knight("black", 7, 1));
+//    squares[7][6].occupy(new Knight("black", 7, 6)));
 //    
-//    black_pieces.add(squares[7][2].occupy(new Bishop("black", 7, 2)));
-//    black_pieces.add(squares[7][5].occupy(new Bishop("black", 7, 5)));
+//    squares[7][2].occupy(new Bishop("black", 7, 2));
+//    squares[7][5].occupy(new Bishop("black", 7, 5));
 //    
-//    black_pieces.add(squares[7][3].occupy(new Queen("black", 7, 3)));
-    black_pieces.add(squares[7][4].occupy(new King("black", 7, 4)));
-    white_pieces.add(squares[5][5].occupy(new Pawn("white", 5, 5)));
+//    squares[7][3].occupy(new Queen("black", 7, 3));
+    squares[7][4].occupy(new King("black", 7, 4));
     kings[1] = (King) squares[7][4].getOccupant();
 
     // set up the white pieces
 //    for (int j = 0; j < 8; j++) {
-//      white_pieces.add(squares[1][j].occupy(new Pawn("white", 1, j)));
+//      squares[1][j].occupy(new Pawn("white", 1, j));
 //    }
 //    
-//    white_pieces.add(squares[0][0].occupy(new Rook("white", 0, 0)));
-//    white_pieces.add(squares[0][7].occupy(new Rook("white", 0, 7)));
+//    squares[0][0].occupy(new Rook("white", 0, 0));
+//    squares[0][7].occupy(new Rook("white", 0, 7));
 //    
-//    white_pieces.add(squares[0][1].occupy(new Knight("white", 0, 1)));
-//    white_pieces.add(squares[0][6].occupy(new Knight("white", 0, 6)));
+//    squares[0][1].occupy(new Knight("white", 0, 1));
+//    squares[0][6].occupy(new Knight("white", 0, 6));
 //    
-//    white_pieces.add(squares[0][2].occupy(new Bishop("white", 0, 2)));
-//    white_pieces.add(squares[0][5].occupy(new Bishop("white", 0, 5)));
+//    squares[0][2].occupy(new Bishop("white", 0, 2));
+//    squares[0][5].occupy(new Bishop("white", 0, 5));
 //    
-//    white_pieces.add(squares[0][3].occupy(new Queen("white", 0, 3)));
-    white_pieces.add(squares[0][4].occupy(new King("white", 0, 4)));
+    squares[0][3].occupy(new Queen("white", 0, 3));
+    squares[0][4].occupy(new King("white", 0, 4));
     kings[0] = (King) squares[0][4].getOccupant();
+    
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (squares[i][j].isOccupied()) {
+          Piece p = squares[i][j].getOccupant();
+          if (p.getColor().equals("w")) {
+            white_pieces.add(p);
+          } else {
+            black_pieces.add(p);
+          }
+        }
+      }
+    }
    }
   
-  public void movePieceTo(String from, String to) throws IllegalMoveException {
+  public void movePiece(String from, String to) throws IllegalMoveException {
     int[] from_pair, to_pair;
     from_pair = coordToRankFilePair(from);
     to_pair = coordToRankFilePair(to);
@@ -91,59 +103,63 @@ public class Board {
 
     // is there someone there?
     if (squares[drank][dfile].getOccupant() != null) {
-      // is it one of our own pieces?
-      if (squares[drank][dfile].getOccupant().getColor() == piece.getColor()) {
-        // the piece cannot capture it's own brethren
+      if (squares[drank][dfile].getOccupant().getColor() == piece.getColor())
         throw new IllegalMoveException("cannot capture own piece");
-      } else {
-        // there is a capture happening!!!
-        System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
-        squares[drank][dfile].occupy(piece);
-        squares[rank][file].vacate();
-        piece.incrMoved();
-      }
+ 
+      if (!piece.canAttack(drank, dfile))
+        throw new IllegalMoveException("the piece cannot attack " + to);
+
+      // there is a capture happening!!!
+      System.out.println(piece + " captured " + squares[drank][dfile].getOccupant());
+      piece.moveTo(drank, dfile);
+      squares[drank][dfile].occupy(piece);
+      squares[rank][file].vacate();
+      piece.incrMoved();
     } else {
       // special case for pawns, can't actually move sideways, only attack
       if (piece.getClass().equals((Pawn .class)) && Math.abs(file - dfile) == 1) {
         throw new IllegalMoveException("pawns can't move diagonally, only attack");
       }
-      // black castle e8 g8
-      if (piece.getClass().equals((King .class))
-          && piece.neverMoved()
-          && squares[7][7].getOccupant().getClass().equals((Rook .class))
-          && squares[7][7].getOccupant().neverMoved()) {
-        // TODO need to check if the king is in danger between those spots
-        squares[rank][file].vacate();
-        squares[drank][dfile].occupy(piece);
-        squares[drank][dfile-1].occupy(squares[drank][dfile+1].getOccupant());
-        squares[drank][dfile+1].vacate();
-      }
 
-      // black castle e8 c8
-      if (piece.getClass().equals((King .class))
-          && piece.neverMoved()
-          && squares[7][0].getOccupant().getClass().equals((Rook .class))
-          && squares[7][0].getOccupant().neverMoved()) {
-        // TODO need to check if the king is in danger between those spots
-        squares[rank][file].vacate();
-        squares[drank][dfile].occupy(piece);
-        squares[drank][dfile+1].occupy(squares[drank][dfile-2].getOccupant());
-        squares[drank][dfile-2].vacate();
-      }
-
+      piece.moveTo(drank, dfile);
       squares[drank][dfile].occupy(piece);
       squares[rank][file].vacate();
       piece.incrMoved();
+      System.out.println("moved " + piece + " from " + from + " to " + to);
     }
     
-    checkForCheck();
+    checkForCheckAndMate();
   }
   
-  private void checkForCheck() {
+  private void checkForCheckAndMate() {
     for (King king : kings) {
-      System.out.println("checking the " + king.getColor() + " king");
-      if (canPieceBeAttackedAt(king.rawRank(), king.rawFile())) {
-        System.out.println(king + " is under check");
+      int check = 0;
+      
+      if (canPieceBeAttackedAt(king, king.rawRank(), king.rawFile())) {
+        check = 2;
+        
+        for (String move : king.availableMoves()) {
+          int[] pair = coordToRankFilePair(move);
+          
+          if (!canPieceBeAttackedAt(king, pair)) { // we can't be attacked there
+            Piece occupant = squares[pair[0]][pair[1]].getOccupant();
+            if (occupant != null) { // the square isn't empty
+              // if the king can attack that piece successfully without being in check
+              if (king.isEnemiesWith(occupant)) {
+                check = 1;
+              }
+            }
+          }
+        }
+        
+        switch (check) {
+          case 1:
+            System.out.println(king + " is under check");
+            break;
+          case 2:
+            System.out.println(king + " is under check mate");
+            break;
+        }
       } else {
         System.out.println(king + " is safe");
       }
@@ -165,22 +181,26 @@ public class Board {
     return false;
   }
   
-  public boolean canPieceBeAttackedAt(int rank, int file) {
-    Piece piece = squares[rank][file].getOccupant();
+  public boolean canPieceBeAttackedAt(Piece piece, int[] rankFilePair) {
+    return canPieceBeAttackedAt(piece, rankFilePair[0], rankFilePair[1]);
+  }
+  
+  public boolean canPieceBeAttackedAt(Piece piece, int rank, int file) {
+    if (piece == null) return false;
     
     ArrayList<Piece> enemy = (piece.getColor().equals("w") ? black_pieces : white_pieces);
     
     for (Piece e : enemy) {
       System.out.println("checking " + e);
-      if (e.canMoveTo(rank, file)) {
+      if (e.canAttack(rank, file)) {
         return true;
       } else {
-        System.out.println(e + " cannot move to " + piece);
+        System.out.println(e + " at " + e.getFileRank() + " cannot attack " + piece + " at " + piece.getFileRank());
         System.out.println(e + " can move to:");
-        ArrayList<String> moves = e.availableMovesFrom(rank, file);
+        ArrayList<String> moves = e.availableMoves();
         
         for (String move : moves) {
-          System.out.print(move + ", ");
+          System.out.print(move + " ");
         }
         
         System.out.println("");
@@ -224,9 +244,7 @@ public class Board {
    * @return
    */
   private static int[] coordToRankFilePair(String coord) {
-    int[] pair =  {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'};
-    System.out.println(coord + " => {" + pair[0] + ", " + pair[1] + "}" );
-    return pair;
+    return new int[] {(coord.charAt(1) - '1'), coord.charAt(0) - 'a'};
   }
   
   public static String rankFileToCoord(int rank, int file) {

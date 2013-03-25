@@ -40,11 +40,24 @@ public class Piece implements Movable {
   }
   
   public String getRank() {
-    return String.valueOf(this.rank);
+    return String.valueOf(this.rank + 1);
+  }
+  
+  public String getFileRank() {
+    return getFile() + getRank();
   }
   
   public String toString() {
     return getColor() + getType();
+  }
+  
+  public void moveTo(int rank, int file) {
+    this.rank = rank;
+    this.file = file;
+  }
+  
+  public boolean isEnemiesWith(Piece piece) {
+    return !piece.getColor().equals(color);
   }
 
   @Override
@@ -53,7 +66,7 @@ public class Piece implements Movable {
   }
   
   @Override
-  public ArrayList<String> availableMovesFrom(int rank, int file) {
+  public ArrayList<String> availableMoves() {
     ArrayList<String> spaces = new ArrayList<String>();
     String[] files = {"a", "b","c","d","e","f","g","h"};
     
@@ -67,5 +80,10 @@ public class Piece implements Movable {
     }
     
     return spaces;
+  }
+
+  @Override
+  public boolean canAttack(int rank, int file) {
+    return canMoveTo(rank, file);
   }
 }

@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+
+import exceptions.IllegalMoveException;
+
 
 public class Chess {
   public static void main(String[] argv) {
@@ -7,10 +11,9 @@ public class Chess {
     System.out.println(board);
 
     try {
-      board.movePieceTo("f6", "f7");
-
-    } catch (Exception e) {
-      System.out.println("Error moving: " + e.getMessage());
+      board.movePiece("d1", "a4");
+    } catch (IllegalMoveException e) {
+      System.out.println("Error: " + e.getMessage());
     }
     
     System.out.println(board);    

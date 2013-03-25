@@ -19,6 +19,17 @@ public class Pawn extends Piece {
   }
   
   @Override
+  public boolean canAttack(int rank, int file) {
+    // needs to be either to file left or file right
+    if (Math.abs(file - this.file) != 1) return false;
+    if (this.color.equals("white")) {
+      return rank > this.rank; // can only advance with increasing rank
+    } else {
+      return rank < this.rank; // can only advance with decreasing rank
+    }
+  }
+  
+  @Override
   public boolean canMoveTo(int rank, int file) {
     // general movement first, pawns can't move more than 2 spaces ever
     if (Math.abs(rank - this.rank) > 2) return false;
@@ -32,7 +43,7 @@ public class Pawn extends Piece {
     }
     
     // can't possibly move more than one to the side, ever
-    if (Math.abs(file - this.file) > 1) return false;
+    if (Math.abs(file - this.file) > 0) return false;
     
     if (this.color.equals("white")) {
       // can only advance with increasing rank
