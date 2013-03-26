@@ -159,6 +159,7 @@ public class Board {
       for (String potential_move : king.availableMoves()) { // for all the moves the king can make   
         if (!canPieceBeAttackedAt(king, potential_move)) { // if we can't be attacked there
           check = 1;
+          System.out.println(king + " can't be touched at " + potential_move);
 
           if (getOccupantAt(potential_move) != null
               && king.isFriendsWith(getOccupantAt(potential_move))) {
@@ -232,6 +233,7 @@ public class Board {
     for (Piece e : enemy) {
 //      System.out.println("checking " + e);
       if (e.canAttack(rank, file)) {
+        System.out.println(e + " can attack " + piece);
         return true;
       } else {
 //        System.out.println(e + " at " + e.getFileRank() + " cannot attack " + piece + " at " + piece.getFileRank());
@@ -274,6 +276,10 @@ public class Board {
   
   public boolean pieceBelongsToPlayer(String loc, String player) {
     return getOccupantAt(loc).getColor().equals(player.substring(0, 1));
+  }
+  
+  public boolean pieceExistsAt(String loc) {
+    return getOccupantAt(loc) != null;
   }
   
   public King matedKing() {

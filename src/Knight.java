@@ -22,7 +22,7 @@ public class Knight extends Piece {
     if (Math.abs(file - this.file) > 0 && rank == this.rank) return false;
     
     // can't move more than 2 squares away
-    if (Math.abs(rank - this.rank) > 2 && Math.abs(file - this.file) > 2 ) return false;
+    if (Math.abs(rank - this.rank) > 2 || Math.abs(file - this.file) > 2 ) return false;
     
     return true;
 

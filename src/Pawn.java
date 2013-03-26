@@ -22,6 +22,7 @@ public class Pawn extends Piece {
   public boolean canAttack(int rank, int file) {
     // needs to be either to file left or file right
     if (Math.abs(file - this.file) != 1) return false;
+    if (Math.abs(rank - this.rank) > 1) return false;
     if (this.color.equals("white")) {
       return rank > this.rank; // can only advance with increasing rank
     } else {

@@ -64,7 +64,8 @@ public class Chess {
       }
       
       try {
-        if (!board.pieceBelongsToPlayer(inputTokens[0], player_turn)) {
+        if (board.pieceExistsAt(inputTokens[0])
+            && !board.pieceBelongsToPlayer(inputTokens[0], player_turn)) {
           throw new IllegalMoveException("piece does not belong to " + player_turn);
         }
         
